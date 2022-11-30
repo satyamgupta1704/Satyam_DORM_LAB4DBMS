@@ -205,7 +205,7 @@ CREATE PROCEDURE ecom_proc()
 BEGIN
 select report.supp_id, report.supp_name, report.avg_rating,
 CASE
-	WHEN report.avg_rating = 5 THEN 'Excellent Service'
+    WHEN report.avg_rating = 5 THEN 'Excellent Service'
     WHEN report.avg_rating > 4 THEN 'Good Service'
     WHEN report.avg_rating > 2 THEN 'Average Service'
     ELSE 'Poor Service'
