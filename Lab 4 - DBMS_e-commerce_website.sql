@@ -163,16 +163,14 @@ INSERT INTO RATING VALUES(14,114,1);
 INSERT INTO RATING VALUES(15,115,1);
 INSERT INTO RATING VALUES(16,116,0);
 
-/* Display the total number of customers based on gender 
-who have placed orders of worth at least Rs.3000. */
+/* Display the total number of customers based on gender who have placed orders of worth at least Rs.3000. */
 select t2.cus_gender as customer_gender, count(t2.cus_id) as total_customers from
 (select t1.cus_id, t1.ord_amount, t1.cus_gender, t1.cus_name from 
 (select `order`.*, customer.cus_gender, customer.cus_name from `order` inner join customer where 
 `order`.cus_id = customer.cus_id having `order`.ord_amount >= 3000)
 as t1 group by t1.cus_id) as t2 group by t2.cus_gender;
 
-/* Display all the orders along with product name 
-ordered by a customer having Customer_Id=2. */
+/* Display all the orders along with product name ordered by a customer having Customer_Id=2. */
 select product.pro_name, `order`.* from `order`, supplier_pricing, product
 where `order`.cus_id = 2 and 
 `order`.pricing_id = supplier_pricing.pricing_id and
@@ -183,8 +181,7 @@ select supplier.* from supplier where supplier.supp_id in
 (select supp_id from supplier_pricing group by supp_id having 
 count(supp_id) > 1) group by supplier.supp_id;
 
-/* Find the least expensive product from each category and print 
-the table with category id, name, product name and price of the product. */
+/* Find the least expensive product from each category and print the table with category id, name, product name and price of the product. */
 select category.cat_id, category.cat_name, min(t3.min_price) as min_price from category inner join
 (select product.cat_id, product.pro_name, t2.* from product inner join  
 (select pro_id, min(supp_price) as min_price from supplier_pricing group by pro_id) 
@@ -202,9 +199,7 @@ select customer.cus_name, customer.cus_gender from customer
 where customer.cus_name like 'A%' or customer.cus_name like '%A';
 
 /* Create a stored procedure to display supplier id, name, rating and Type_of_Service. 
-For Type_of_Service, If rating =5, print “Excellent Service”,
-If rating >4 print “Good Service”, 
-If rating >2 print “Average Service” else print “Poor Service”. */
+For Type_of_Service, If rating =5, print “Excellent Service”, If rating >4 print “Good Service”, If rating >2 print “Average Service” else print “Poor Service”. */
 DELIMITER //
 CREATE PROCEDURE ecom_proc()
 BEGIN
@@ -218,7 +213,8 @@ END AS type_of_service from
 (select final.supp_id, supplier.supp_name, final.avg_rating from
 (select test.supp_id, sum(test.rat_ratstars) / count(test.rat_ratstars) as avg_rating from
 (select supplier_pricing.supp_id, test.ord_id, test.rat_ratstars from supplier_pricing inner join
-(select `order`.pricing_id, rating.ord_id, rating.rat_ratstars from `order` inner join rating on rating.`ord_id` = `order`.ord_id ) as test on test.pricing_id = supplier_pricing.pricing_id) 
+(select `order`.pricing_id, rating.ord_id, rating.rat_ratstars from `order` inner join rating on rating.`ord_id` = `order`.ord_id) 
+as test on test.pricing_id = supplier_pricing.pricing_id) 
 as test group by supplier_pricing.supp_id) 
 as final inner join supplier where final.supp_id = supplier.supp_id) as report;
 END //
